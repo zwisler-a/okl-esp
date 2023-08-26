@@ -14,13 +14,14 @@ public:
 
     explicit CompletableTask(unsigned long executionOffset);
 
-    void setOnComplete(Task *onCompleteTask);
+    void setOnComplete(Task *onCompleteTask, long delay);
 
 protected:
     void complete();
 
 private:
     Task *onComplete;
+    long delay;
 };
 
 

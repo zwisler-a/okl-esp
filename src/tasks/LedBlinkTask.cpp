@@ -6,25 +6,36 @@
 #include "scheduler/Scheduler.h"
 
 int current = 0;
+int isPause = false;
+int ledOnState = LOW;
+int ledOffState = HIGH;
 
-int ledState = LOW;
-
-LedBlinkTask::LedBlinkTask(unsigned long executionOffset, int pin, unsigned short *pattern,
-                           unsigned short patternLength)
-        : CompletableTask(executionOffset), ledPin(pin), pattern(pattern), patternLength(patternLength) {
+LedBlinkTask::LedBlinkTask(unsigned long executionOffset, int pin)
+        : CompletableTask(executionOffset), ledPin(pin) {
     pinMode(ledPin, OUTPUT);
+    running = false;
+    patternLength = 0;
 }
 
 
 void LedBlinkTask::run() {
     if (current < patternLength) {
-        Scheduler::schedule(this, pattern[current]);
-        current++;
-        ledState = ledState == LOW ? HIGH : LOW;
-        digitalWrite(ledPin, ledState);
+        running = true;
+        if (!isPause) {
+
+            digitalWrite(ledPin, ledOnState);
+            Scheduler::schedule(this, pattern[current]);
+            current++;
+        } else {
+            digitalWrite(ledPin, ledOffState);
+            Scheduler::schedule(this, 200);
+        }
+        isPause = !isPause;
     } else {
         current = 0;
-        digitalWrite(ledPin, HIGH);
+        isPause = false;
+        running = false;
+        digitalWrite(ledPin, ledOffState);
         complete();
     }
 }

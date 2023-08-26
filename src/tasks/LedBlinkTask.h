@@ -11,14 +11,19 @@
 
 class LedBlinkTask : public CompletableTask {
 public:
-    LedBlinkTask(unsigned long executionOffset, int pin, unsigned short *pattern, unsigned short patternLength);
+    LedBlinkTask(unsigned long executionOffset, int pin);
 
     void run() override;
 
+    bool running;
+
+
+
+    unsigned short patternLength;
+    unsigned short *pattern;
 private:
     int ledPin;
-    unsigned short *pattern;
-    unsigned short patternLength;
+
 
 };
 

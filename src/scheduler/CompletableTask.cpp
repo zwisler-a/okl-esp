@@ -13,12 +13,13 @@ CompletableTask::CompletableTask(unsigned long executionOffset, Task *onComplete
 
 void CompletableTask::complete() {
     if (onComplete != nullptr) {
-        Scheduler::schedule(onComplete);
+        Scheduler::schedule(onComplete, delay);
     }
 }
 
-void CompletableTask::setOnComplete(Task *onCompleteTask) {
+void CompletableTask::setOnComplete(Task *onCompleteTask, long exec_delay) {
     onComplete = onCompleteTask;
+    delay = exec_delay;
 }
 
 

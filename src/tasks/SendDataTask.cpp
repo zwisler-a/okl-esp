@@ -5,9 +5,9 @@
 #include <WiFiClient.h>
 #include <ESP8266HTTPClient.h>
 #include "SendDataTask.h"
-#include "scheduler/Scheduler.h"
-#include "LedBlinkTask.h"
 #include "global.h"
+#include "util/Blinker.h"
+#include "util/TinyApi.h"
 
 SendDataTask::SendDataTask(unsigned long executionOffset) : CompletableTask(executionOffset) {
 
@@ -24,19 +24,18 @@ void SendDataTask::run() {
     // Your Domain name with URL path or IP address with path
     http.begin(client, serverPath.c_str());
 
-    Serial.println("H");
-
-    String res = Serial.readString();
     String payload = R"({"attiny": ")";
-    payload.concat(res);
+    payload.concat(TinyApi::getState());
     payload.concat("\"}");
     // Send HTTP GET request
     http.addHeader("Content-Type", "application/json");
     int httpResponseCode = http.POST(payload);
 
     if (httpResponseCode < 0) {
-        Scheduler::schedule(new LedBlinkTask(0, 2, http_error_response_pattern, http_error_response_pattern_length));
+        Blinker::play(HTTP_ERROR);
     }
+
+    Blinker::play(DATA_SEND);
 
     // Free resources
     http.end();

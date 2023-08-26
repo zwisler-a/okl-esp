@@ -8,16 +8,16 @@
 #include <algorithm>
 #include <deque>
 
-std::deque<Task *> tasks;
+std::deque<Task *> nextTasks;
 unsigned long Scheduler::averageWaitTime;
 
 void Scheduler::schedule(Task *task) {
-    tasks.push_front(task);
+    nextTasks.push_front(task);
 }
 
 void Scheduler::schedule(Task *task, int offset) {
     task->updateExecutionTime(offset);
-    tasks.push_front(task);
+    nextTasks.push_front(task);
 }
 
 void Scheduler::loop() {
@@ -48,7 +48,7 @@ void Scheduler::sleep(unsigned long time) {
 }
 
 unsigned long Scheduler::detectSleepTime() {
-    auto nextTask = tasks.back();
+    auto nextTask = nextTasks.back();
     if (nextTask == nullptr) return 0;
     unsigned long nextExecutionTime = nextTask->getExecutionTime();
     if (nextExecutionTime <= millis()) return 0;
@@ -56,12 +56,12 @@ unsigned long Scheduler::detectSleepTime() {
 }
 
 Task *Scheduler::getNextTaskToExecute() {
-    if (tasks.empty()) { return nullptr; }
-    std::sort(tasks.begin(), tasks.end(),
+    if (nextTasks.empty()) { return nullptr; }
+    std::sort(nextTasks.begin(), nextTasks.end(),
               [](const Task *a, const Task *b) { return (a->getExecutionTime() > b->getExecutionTime()); });
-    Task *nextTask = tasks.back();
+    Task *nextTask = nextTasks.back();
     if (nextTask->getExecutionTime() > millis()) return nullptr;
-    tasks.pop_back();
+    nextTasks.pop_back();
     return nextTask;
 }
 

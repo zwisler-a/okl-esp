@@ -6,6 +6,8 @@
 #include "ConnectWifiTask.h"
 #include "scheduler/Scheduler.h"
 #include "global.h"
+#include "LedBlinkTask.h"
+#include "util/Blinker.h"
 
 bool wait_for_connection = false;
 
@@ -17,10 +19,18 @@ void ConnectWifiTask::run() {
         WiFi.begin(constants::SSID, constants::PASS);
         wait_for_connection = true;
     }
-    if (WiFi.status() != WL_CONNECTED) {
-        Scheduler::schedule(this, 500);
-    } else {
-        complete();
+    if (WiFi.status() == WL_CONNECT_FAILED) {
+        Blinker::play(WIFI_CONNECT_FAILED);
+        wait_for_connection = false;
+        Scheduler::schedule(this, 5000);
+        return;
     }
+
+    if (WiFi.status() == WL_CONNECTED) {
+        Blinker::play(WIFI_CONNECTED);
+        complete();
+        return;
+    }
+    Scheduler::schedule(this, 500);
 }
 
