@@ -7,13 +7,15 @@
 
 
 namespace constants {
-    inline const char *ESP_NAME = "TestESP";
-    inline const char *SSID = "<nope>";
-    inline const char *PASS = "<nope>";
-    inline const char *ENDPOINT = "http://192.168.178.103:8080/";
+    inline const char *ESP_NAME = "TestESP3";
+    inline const char *SSID = "<ssid>";
+    inline const char *PASS = "<pw>";
+    inline const char *BASIC_AUTH = "Basic <auth>";
+
+    inline const char *ENDPOINT = "<endpoint>";
 
     inline const int attiny_baud = 4800;
-    inline const int sleep_time = 60;
+    inline const int default_sleep_time = 60;
 }
 
 inline unsigned short LONG = 2000;

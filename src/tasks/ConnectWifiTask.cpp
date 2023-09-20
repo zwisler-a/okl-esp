@@ -6,7 +6,6 @@
 #include "ConnectWifiTask.h"
 #include "scheduler/Scheduler.h"
 #include "global.h"
-#include "LedBlinkTask.h"
 #include "util/Blinker.h"
 
 bool wait_for_connection = false;

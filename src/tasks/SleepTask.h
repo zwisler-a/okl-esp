@@ -8,11 +8,14 @@
 
 #include "scheduler/Task.h"
 
-class SleepTask: public Task {
+class SleepTask : public Task {
+private:
+    long sleepTime;
 protected:
     void run() override;
 
 public:
+    explicit SleepTask(unsigned long executionOffset, long sleepTime);
     explicit SleepTask(unsigned long executionOffset);
 };
 
